@@ -37,8 +37,8 @@ class _MainContainerState extends State<MainContainer> {
         onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Info'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Notification'),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );
