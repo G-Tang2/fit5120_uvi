@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/pages/home_page.dart';
+import 'package:onboarding/pages/info_page.dart';
+import 'package:onboarding/pages/notificaton_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,6 +34,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: const HomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        '/homepage': (context) => const HomePage(title: 'Flutter Demo Home Page'),
+        '/infopage': (context) => const InfoPage(title: 'Flutter Demo Info Page'),
+        '/notificationpage': (context) => const NotificationPage(title: 'Flutter Demo Info Page')
+      }
     );
   }
 }
