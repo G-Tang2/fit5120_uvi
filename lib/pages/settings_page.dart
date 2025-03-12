@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key, required this.title});
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -15,10 +15,10 @@ class NotificationPage extends StatefulWidget {
   final String title;
 
   @override
-  State<NotificationPage> createState() => _InfoPageState();
+  State<SettingsPage> createState() => _InfoPageState();
 }
 
-class _InfoPageState extends State<NotificationPage> {
+class _InfoPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -33,7 +33,7 @@ class _InfoPageState extends State<NotificationPage> {
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the NotificationPage object that was created by
+        // Here we take the value from the SettingsPage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
@@ -56,7 +56,7 @@ class _InfoPageState extends State<NotificationPage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('This is the Notification Page')
+            const Text('This is the Settings Page')
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/pages/home_page.dart';
 import 'package:onboarding/pages/info_page.dart';
-import 'package:onboarding/pages/notificaton_page.dart';
+import 'package:onboarding/pages/settings_page.dart';
 
 class MainContainer extends StatefulWidget {
   const MainContainer({super.key});
@@ -16,7 +16,7 @@ class _MainContainerState extends State<MainContainer> {
   final List<Widget> _pages = [
     HomePage(title: "Home Page"),
     InfoPage(title: "Info Page"),
-    NotificationPage(title: "Notification Page"),
+    SettingsPage(title: "Settings Page"),
   ];
 
   void _onItemTapped(int index) {
