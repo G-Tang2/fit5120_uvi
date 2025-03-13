@@ -41,10 +41,12 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return TypeAheadField<Map<String, dynamic>>(
-      builder: (context, controller, focusNode) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      child:TypeAheadField<Map<String, dynamic>>(
+      builder: (context, _controller, focusNode) {
         return TextField(
-          controller: controller,
+          controller: _controller,
           focusNode: focusNode,
           decoration: InputDecoration(
             labelText: "Search Location",
@@ -53,6 +55,9 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
           ),
         );},
       suggestionsCallback: (query) => _searchLocation(query),
+      emptyBuilder: (context) => Container(
+          padding: const EdgeInsets.all(14),
+          child: Text("No matching address")),
       itemBuilder: (context, suggestion) {
         return ListTile(
           leading: Icon(Icons.place),
@@ -63,6 +68,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         _controller.text = suggestion["name"];  // update text field with selected location
         widget.onValueChanged({'lat': suggestion["lat"], 'lon': suggestion["lon"]});  // update coordinates for uvi
       },
+      )
     );
   }
 }

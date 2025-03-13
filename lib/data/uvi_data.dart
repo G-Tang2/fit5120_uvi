@@ -14,4 +14,15 @@ class UVIData {
       uvTime: res['uv_time'],
     );
   }
+
+  factory UVIData.fromCurrentUVAPIJson(Map<String, dynamic> json) {
+      var res = json['now'];
+      if (res == null) {
+        throw Exception('Failed to load UVI data');
+      }
+      return UVIData(
+        uv: res['uvi'],
+        uvTime: res['time'],
+    );
+  }
 }
