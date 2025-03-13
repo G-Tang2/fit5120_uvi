@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:onboarding/data/uvi_data.dart';
 
 Future<UVIData> fetchUVI() async{
@@ -70,7 +71,14 @@ class _HomePageState extends State<HomePage> {
               future: futureUVIData,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text(snapshot.data!.now.uvi.toString());
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text('UV ${snapshot.data!.now.uvi.toInt().toString()}'),
+                      Text(DateFormat('hh:mm a').format(DateTime.parse(snapshot.data!.now.time.toString()).toLocal())),
+                      Text('Retrieved from https://currentuvindex.com'),
+                    ]
+                  );
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');
                 } else {
