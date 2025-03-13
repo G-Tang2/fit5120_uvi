@@ -16,6 +16,13 @@ class LocationSearchBar extends StatefulWidget {
 class _LocationSearchBarState extends State<LocationSearchBar> {
   final TextEditingController _controller = TextEditingController();
 
+  void _changeTextFieldValue(String value) {
+    setState(() {
+      print(value);
+      _controller.text = "hi";
+    });
+  }
+
   Future<List<Map<String, dynamic>>> _searchLocation(String query) async {
     if (query.isEmpty) return [];
 
@@ -65,7 +72,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
         );
       },
       onSelected: (suggestion) {
-        _controller.text = suggestion["name"];  // update text field with selected location
+        _changeTextFieldValue(suggestion["name"]);  // update text field with selected location
         widget.onValueChanged({'lat': suggestion["lat"], 'lon': suggestion["lon"]});  // update coordinates for uvi
       },
       )

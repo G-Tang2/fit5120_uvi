@@ -53,9 +53,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Map<String, dynamic> _selectedPlace = {"lat":0.0, "lon":0.0};   //TODO: change to current location
-  TextEditingController controller = TextEditingController();
   late Future<UVIData> _futureUVIData;
   String _uvAPISource = '';
+  Color _sunColor = Colors.yellow;
 
   void _updatePlace(Map<String, dynamic> place) {
     setState(() {
@@ -96,9 +96,10 @@ class _HomePageState extends State<HomePage> {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Icon(Icons.wb_sunny, color: _sunColor, size: 100),
                       Text('UV ${snapshot.data!.uv.toInt().toString()}'),
                       Text('Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}'),
-                      Text('Retrieved from ${_uvAPISource}'),
+                      Text('Retrieved from $_uvAPISource'),
                     ]
                   );
                 } else if (snapshot.hasError) {
