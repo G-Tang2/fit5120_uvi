@@ -1,4 +1,22 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:onboarding/data/uvi_data.dart';
+
+Future<UVIData> fetchUVI() async{
+  final response = await http.get(Uri.parse('https://currentuvindex.com/api/v1/uvi?latitude=40.6943&longitude=-73.9249'));
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return UVIData.fromJson(jsonDecode(response.body));
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load UVI data');
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
