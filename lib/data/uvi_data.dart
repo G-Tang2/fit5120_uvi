@@ -14,21 +14,25 @@ class UVITime {
 }
 
 class UVIData {
-  final double lat;
-  final double long;
+  final double latitude;
+  final double longitude;
   final UVITime now;
   final List<UVITime> forecast;
   final List<UVITime> history;
 
-  UVIData({required this.lat, required this.long, required this.now, required this.forecast, required this.history});
+  UVIData({required this.latitude, required this.longitude, required this.now, required this.forecast, required this.history});
 
   factory UVIData.fromJson(Map<String, dynamic> json) {
     return UVIData(
-      lat: json['lat'] as double,
-      long: json['long'] as double,
+      latitude: json['latitude'] as double,
+      longitude: json['longitude'] as double,
       now: UVITime.fromJson(json['now']),
-      forecast: json['forecast'].map((e) => UVITime.fromJson(e)).toList(),
-      history: json['history'].map((e) => UVITime.fromJson(e)).toList(),
+      forecast: (json['forecast'] as List)
+          .map((item) => UVITime.fromJson(item))
+          .toList(),
+      history: (json['history'] as List)
+          .map((item) => UVITime.fromJson(item))
+          .toList(),
     );
   }
 }
