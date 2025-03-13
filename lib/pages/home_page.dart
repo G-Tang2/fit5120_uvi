@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:onboarding/data/uvi_data.dart';
 
 Future<UVIData> fetchUVI() async{
-  final response = await http.get(Uri.parse('https://currentuvindex.com/api/v1/uvi?latitude=40.6943&longitude=-73.9249'));
+  final response = await http.get(Uri.parse('https://currentuvindex.com/api/v1/uvi?latitude=-37.932746&longitude=-145.126698'));
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -37,17 +37,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  late Future<UVIData> futureUVIData;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  void initState() {
+    super.initState();
+    futureUVIData = fetchUVI();
   }
 
   @override
@@ -71,7 +66,18 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
+        child: FutureBuilder<UVIData>(
+              future: futureUVIData,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data!.now.uvi.toString());
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
           // children horizontally, and tries to be as tall as its parent.
@@ -85,21 +91,8 @@ class _HomePageState extends State<HomePage> {
           // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
           // action in the IDE, or press "p" in the console), to see the
           // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+      );
   }
 }
