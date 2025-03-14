@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/pages/home_page.dart';
 import 'package:onboarding/pages/info_page.dart';
-import 'package:onboarding/pages/settings_page.dart';
+// import 'package:onboarding/pages/settings_page.dart';
 
 class MainContainer extends StatefulWidget {
   const MainContainer({super.key});
@@ -16,7 +16,7 @@ class _MainContainerState extends State<MainContainer> {
   final List<Widget> _pages = [
     HomePage(title: "Home Page"),
     InfoPage(title: "Info Page"),
-    SettingsPage(title: "Settings Page"),
+    // SettingsPage(title: "Settings Page"),
   ];
 
   void _onItemTapped(int index) {
@@ -38,7 +38,7 @@ class _MainContainerState extends State<MainContainer> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+          // BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),
     );
