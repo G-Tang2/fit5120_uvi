@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/ui/main_container.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load();
   runApp(const MyApp());
 }
 
