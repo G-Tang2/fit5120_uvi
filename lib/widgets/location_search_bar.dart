@@ -73,7 +73,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       },
       onSelected: (suggestion) {
         _changeTextFieldValue(suggestion["name"]);  // update text field with selected location
-        widget.onValueChanged({'lat': suggestion["lat"], 'lon': suggestion["lon"]});  // update coordinates for uvi
+        widget.onValueChanged({'lat': suggestion["lat"], 'lon': suggestion["lon"], 'name': suggestion["name"] });  // update coordinates for uvi
       },
       )
     );

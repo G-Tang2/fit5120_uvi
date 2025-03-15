@@ -52,14 +52,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Map<String, dynamic> _selectedPlace = {"lat":0.0, "lon":0.0};   //TODO: change to current location
+  // Map<String, dynamic> _selectedPlace = {"lat":0.0, "lon":0.0};   //TODO: change to current location
+  Map<String, dynamic> _selectedPlace = {"lat":-37.8142, "lon":144.9631}; 
   late Future<UVIData> _futureUVIData;
   String _uvAPISource = '';
   Color _sunColor = Colors.yellow;
 
+  String _selectedPlaceName = "Melbourne, Australia"; 
+
   void _updatePlace(Map<String, dynamic> place) {
     setState(() {
       _selectedPlace = place;
+      _selectedPlaceName = place["name"] ?? "Unknown Location";
     });
     _futureUVIData = fetchUVI(place, _updateSource);
   }
@@ -77,6 +81,21 @@ class _HomePageState extends State<HomePage> {
     _futureUVIData = fetchUVI({'lat': -37.8142454, 'lon': 144.9631732}, _updateSource);
   }
 
+  Widget _buildLocation(){
+    return Card(
+  margin: EdgeInsets.all(16),
+  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  elevation: 4,
+  child: ListTile(
+    leading: Icon(Icons.location_on, color: Colors.redAccent),
+    title: Text(_selectedPlaceName,
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+    // subtitle: Text("Current Location"),
+    subtitle: Text('Lat: ${_selectedPlace["lat"]}, Lon: ${_selectedPlace["lon"]}'),
+  ),
+);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +107,8 @@ class _HomePageState extends State<HomePage> {
       body: Center(
         child: Column(children: <Widget>[
           LocationSearchBar(onValueChanged: _updatePlace),
-          Text('${_selectedPlace["lat"]} ${_selectedPlace["lon"]}'),
+          _buildLocation(),
+          // Text('${_selectedPlace["lat"]} ${_selectedPlace["lon"]}'),
           FutureBuilder<UVIData>(
               future: _futureUVIData,
               builder: (context, snapshot) {
