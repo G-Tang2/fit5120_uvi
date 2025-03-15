@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:onboarding/data/uvi_data.dart';
 import 'package:onboarding/widgets/location_search_bar.dart';
+import 'package:onboarding/widgets/small_card.dart';
 import 'package:lottie/lottie.dart';
 
 Future<UVIData> fetchUVI(
@@ -65,7 +66,32 @@ class _HomePageState extends State<HomePage> {
   Map<String, dynamic> _selectedPlace = {"lat": -37.8142, "lon": 144.9631};
   late Future<UVIData> _futureUVIData;
   String _uvAPISource = '';
-  // Color _sunColor = Colors.yellow;
+
+  String getUVLevel(double uvIndex) {
+    if (uvIndex <= 2)
+      return "Low";
+    else if (uvIndex <= 5)
+      return "Moderate";
+    else if (uvIndex <= 7)
+      return "High";
+    else if (uvIndex <= 10)
+      return "Very High";
+    else
+      return "Extreme";
+  }
+
+  List<Color> getBackgroundColor(double uvIndex) {
+    if (uvIndex <= 2)
+      return [Colors.green.shade300, Colors.green.shade700];
+    else if (uvIndex <= 5)
+      return [Colors.yellow.shade300, Colors.yellow.shade700];
+    else if (uvIndex <= 7)
+      return [Colors.orange.shade300, Colors.orange.shade700];
+    else if (uvIndex <= 10)
+      return [Colors.red.shade300, Colors.red.shade700];
+    else
+      return [Colors.purple.shade300, Colors.purple.shade700];
+  }
 
   String _selectedPlaceName = "Melbourne, Australia";
 
@@ -133,6 +159,8 @@ class _HomePageState extends State<HomePage> {
 
                 if (snapshot.hasData) {
                   double uvIndex = snapshot.data!.uv;
+                  List<Color> backgroundColor = getBackgroundColor(uvIndex);
+                  String uvLevel = getUVLevel(uvIndex);
 
                   // UV with different Animation
                   String lottieAsset;
@@ -147,83 +175,95 @@ class _HomePageState extends State<HomePage> {
                   } else {
                     lottieAsset = "assets/lottie/warning.json"; // UV high
                   }
-
-                  // return Column(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: <Widget>[
-                  //     // Icon(Icons.wb_sunny, color: _sunColor, size: 100),
-                  //     Lottie.asset(
-                  //       lottieAsset,
-                  //       width: lottieWidth,
-                  //       height: lottieHeight,
-                  //       repeat: true,
-                  //       animate: true,
-                  //     ),
-
-                  //     Text('UV ${snapshot.data!.uv.toInt().toString()}'),
-                  // Text(
-                  //   'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
-                  // ),
-                  //     Text('Retrieved from $_uvAPISource'),
-                  //   ],
-                  // );
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 3,
-                    child: Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Column(
-                        children: [
-                          Lottie.asset(
-                            lottieAsset,
-                            width: lottieWidth,
-                            height: lottieHeight,
-                            repeat: true,
-                            animate: true,
-                          ),
-                          const SizedBox(height: 10),
-
-                          Text(
-                            'UV ${snapshot.data!.uv.toInt()}',
-                            style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            '${DateFormat('hh:mm a').format(DateTime.now())}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade700,
-                            ),
-                          ),
-
-                          const SizedBox(height: 4),
-                          // Text(
-                          //   'Max UV Today: ${snapshot.data!.uv_max.toInt()}',
-                          //   style: const TextStyle(
-                          //     fontSize: 18,
-                          //     fontWeight: FontWeight.w500,
-                          //   ),
-                          // ),
-                          Text('Retrieved from $_uvAPISource',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey.shade700,
-
-                          ),)
-                        ],
+                  
+                  return Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: backgroundColor,
                       ),
+                    ),
+                    child: Column(
+                      children: <Widget>[
+                        Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              children: [
+                                Lottie.asset(
+                                  lottieAsset,
+                                  width: lottieWidth,
+                                  height: lottieHeight,
+                                  repeat: true,
+                                  animate: true,
+                                ),
+                                const SizedBox(height: 10),
+
+                                Text(
+                                  'UV ${snapshot.data!.uv.toInt()}',
+                                  style: const TextStyle(
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Text(
+                                  '${DateFormat('hh:mm a').format(DateTime.now())}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(height: 20),
+                                Text(
+                                  'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+
+                                const SizedBox(height: 4),
+                                // Text(
+                                //   'Max UV Today: ${snapshot.data!.uv_max.toInt()}',
+                                //   style: const TextStyle(
+                                //     fontSize: 18,
+                                //     fontWeight: FontWeight.w500,
+                                //   ),
+                                // ),
+                                Text(
+                                  'Retrieved from $_uvAPISource',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            SmallCard(
+                              label: "UV",
+                              value: uvLevel,
+                              subtext: "Level",
+                            ),
+                            SmallCard(
+                              label: "Max UVI Today",
+                              // value: uvMax.toStringAsFixed(1),
+                              value: snapshot.data!.uv_max.toStringAsFixed(1),
+                              subtext: "",
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   );
                 } else if (snapshot.hasError) {
