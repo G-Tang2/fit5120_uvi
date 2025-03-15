@@ -133,37 +133,98 @@ class _HomePageState extends State<HomePage> {
 
                 if (snapshot.hasData) {
                   double uvIndex = snapshot.data!.uv;
-                  // double uvIndex = 8;
+
                   // UV with different Animation
                   String lottieAsset;
                   if (uvIndex <= 2) {
-                    lottieAsset = "assets/lottie/cloudy.json"; // UV low
+                    lottieAsset = "assets/lottie/night.json"; // UV low
                   } else if (uvIndex <= 5) {
-                    lottieAsset = "assets/lottie/sun.json"; // UV Moderate
+                    lottieAsset = "assets/lottie/cloudy.json"; // UV Moderate
+                  } else if (uvIndex <= 7) {
+                    lottieAsset = "assets/lottie/sun.json"; // UV High
                     lottieWidth = 250;
                     lottieHeight = 250;
                   } else {
                     lottieAsset = "assets/lottie/warning.json"; // UV high
                   }
 
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      // Icon(Icons.wb_sunny, color: _sunColor, size: 100),
-                      Lottie.asset(
-                        lottieAsset,
-                        width: lottieWidth,
-                        height: lottieHeight,
-                        repeat: true,
-                        animate: true,
-                      ),
+                  // return Column(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: <Widget>[
+                  //     // Icon(Icons.wb_sunny, color: _sunColor, size: 100),
+                  //     Lottie.asset(
+                  //       lottieAsset,
+                  //       width: lottieWidth,
+                  //       height: lottieHeight,
+                  //       repeat: true,
+                  //       animate: true,
+                  //     ),
 
-                      Text('UV ${snapshot.data!.uv.toInt().toString()}'),
-                      Text(
-                        'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
+                  //     Text('UV ${snapshot.data!.uv.toInt().toString()}'),
+                  // Text(
+                  //   'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
+                  // ),
+                  //     Text('Retrieved from $_uvAPISource'),
+                  //   ],
+                  // );
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Column(
+                        children: [
+                          Lottie.asset(
+                            lottieAsset,
+                            width: lottieWidth,
+                            height: lottieHeight,
+                            repeat: true,
+                            animate: true,
+                          ),
+                          const SizedBox(height: 10),
+
+                          Text(
+                            'UV ${snapshot.data!.uv.toInt()}',
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            '${DateFormat('hh:mm a').format(DateTime.now())}',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+
+                          const SizedBox(height: 4),
+                          // Text(
+                          //   'Max UV Today: ${snapshot.data!.uv_max.toInt()}',
+                          //   style: const TextStyle(
+                          //     fontSize: 18,
+                          //     fontWeight: FontWeight.w500,
+                          //   ),
+                          // ),
+                          Text('Retrieved from $_uvAPISource',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade700,
+
+                          ),)
+                        ],
                       ),
-                      Text('Retrieved from $_uvAPISource'),
-                    ],
+                    ),
                   );
                 } else if (snapshot.hasError) {
                   return Text('${snapshot.error}');

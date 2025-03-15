@@ -49,7 +49,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(14),
       child:TypeAheadField<Map<String, dynamic>>(
       builder: (context, _controller, focusNode) {
         return TextField(
