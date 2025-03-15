@@ -14,7 +14,7 @@ Future<UVIData> fetchUVI(
   Function(String) updateSource,
 ) async {
   final String apiUrl =
-      "https://api.openuv.io/api/v1/uv?lat=${place['lat']}&lng=${place['long']}&alt=100&dt=";
+      "https://api.openuv.io/api/v1/uv?lat=${place['lat']}&lng=${place['lon']}&alt=100&dt=";
   final String accessToken = dotenv.get('OPEN_UV_API_KEY');
 
   try {
@@ -25,6 +25,9 @@ Future<UVIData> fetchUVI(
         "Content-Type": "application/json",
       },
     );
+    // print(" ${response.statusCode}");
+    // print("API Response: ${response.body}");
+    // print("API Request: $apiUrl");
 
     if (response.statusCode == 200) {
       updateSource('https://www.openuv.io/');
@@ -87,11 +90,11 @@ class _HomePageState extends State<HomePage> {
       _selectedPlace = place;
       _selectedPlaceName = place["name"] ?? "Unknown Location";
     });
-    _futureUVIData = fetchUVI(place, _updateSource).then((data){
+    _futureUVIData = fetchUVI(place, _updateSource).then((data) {
       setState(() {
-      _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
-    });
-    return data;
+        _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
+      });
+      return data;
     });
   }
 
@@ -188,7 +191,7 @@ class _HomePageState extends State<HomePage> {
 
                   if (snapshot.hasData) {
                     double uvIndex = snapshot.data!.uv;
-                    
+
                     // List<Color> backgroundColor = getBackgroundColor(uvIndex);
                     String uvLevel = getUVLevel(uvIndex);
 
@@ -209,13 +212,6 @@ class _HomePageState extends State<HomePage> {
                     return Container(
                       height: MediaQuery.of(context).size.height * 0.6,
                       width: double.infinity,
-                      // decoration: BoxDecoration(
-                      //   gradient: LinearGradient(
-                      //     begin: Alignment.topCenter,
-                      //     end: Alignment.bottomCenter,
-                      //     colors: _scaffoldBackgroundGradient,
-                      //   ),
-                      // ),
                       child: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
@@ -273,24 +269,30 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                SmallCard(
-                                  label: "UV",
-                                  value: uvLevel,
-                                  subtext: "UV Level",
-                                ),
-                                SmallCard(
-                                  label: "Max",
-                                  // value: uvMax.toStringAsFixed(1),
-                                  value: snapshot.data!.uv_max.toStringAsFixed(
-                                    1,
+                            const SizedBox(height: 20),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SmallCard(
+                                    label: "UV",
+                                    value: uvLevel,
+                                    subtext: "UV Level",
                                   ),
-                                  subtext: "Max UVI of Today",
-                                ),
-                              ],
+                                  SmallCard(
+                                    label: "Max",
+                                    value:
+                                        "UV ${snapshot.data!.uv_max.toStringAsFixed(1)}",
+                                    subtext: DateFormat('hh:mm a').format(
+                                      DateTime.parse(
+                                        snapshot.data!.uv_maxTime,
+                                      ).toLocal(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),

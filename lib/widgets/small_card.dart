@@ -4,12 +4,14 @@ class SmallCard extends StatelessWidget {
   final String label;
   final String value;
   final String subtext;
+  final String? extraText;
 
   const SmallCard({
     super.key,
     required this.label,
     required this.value,
     required this.subtext,
+    this.extraText,
   });
 
   @override
@@ -29,14 +31,24 @@ class SmallCard extends StatelessWidget {
                   color: Colors.purple.shade100,
                   shape: BoxShape.circle,
                 ),
-                child: Text(label, style: TextStyle(color: Colors.purple.shade600)),
+                child: Text(
+                  label,
+                  style: TextStyle(color: Colors.purple.shade600),
+                ),
               ),
               const SizedBox(height: 8),
               // content
               Text(
                 value,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
+              if (extraText != null)
+                Text(extraText!,
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14)),
+                    
               Text(subtext, style: TextStyle(color: Colors.grey.shade600)),
             ],
           ),
