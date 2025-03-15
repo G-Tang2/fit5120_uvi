@@ -80,19 +80,6 @@ class _HomePageState extends State<HomePage> {
       return "Extreme";
   }
 
-  List<Color> getBackgroundColor(double uvIndex) {
-    if (uvIndex <= 2)
-      return [Colors.green.shade300, Colors.green.shade700];
-    else if (uvIndex <= 5)
-      return [Colors.yellow.shade300, Colors.yellow.shade700];
-    else if (uvIndex <= 7)
-      return [Colors.orange.shade300, Colors.orange.shade700];
-    else if (uvIndex <= 10)
-      return [Colors.red.shade300, Colors.red.shade700];
-    else
-      return [Colors.purple.shade300, Colors.purple.shade700];
-  }
-
   String _selectedPlaceName = "Melbourne, Australia";
 
   void _updatePlace(Map<String, dynamic> place) {
@@ -100,7 +87,12 @@ class _HomePageState extends State<HomePage> {
       _selectedPlace = place;
       _selectedPlaceName = place["name"] ?? "Unknown Location";
     });
-    _futureUVIData = fetchUVI(place, _updateSource);
+    _futureUVIData = fetchUVI(place, _updateSource).then((data){
+      setState(() {
+      _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
+    });
+    return data;
+    });
   }
 
   void _updateSource(String source) {
@@ -116,7 +108,12 @@ class _HomePageState extends State<HomePage> {
     _futureUVIData = fetchUVI({
       'lat': -37.8142454,
       'lon': 144.9631732,
-    }, _updateSource);
+    }, _updateSource).then((data) {
+      setState(() {
+        _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
+      });
+      return data;
+    });
   }
 
   Widget _buildLocation() {
@@ -138,6 +135,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // bg color
+  List<Color> getBackgroundColor(double uvIndex) {
+    if (uvIndex <= 2)
+      return [Colors.green.shade50, Colors.green.shade500];
+    else if (uvIndex <= 5)
+      return [Colors.yellow.shade100, Colors.yellow.shade500];
+    else if (uvIndex <= 7)
+      return [Colors.orange.shade100, Colors.orange.shade500];
+    else if (uvIndex <= 10)
+      return [Colors.red.shade100, Colors.red.shade500];
+    else
+      return [Colors.purple.shade100, Colors.purple.shade500];
+  }
+
+  List<Color> _scaffoldBackgroundGradient = [
+    Colors.blue.shade100,
+    Colors.blue.shade50,
+  ];
+
+  void _updateBackgroundGradient(double uvIndex) {
+    setState(() {
+      _scaffoldBackgroundGradient = getBackgroundColor(uvIndex);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,135 +167,144 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            LocationSearchBar(onValueChanged: _updatePlace),
-            _buildLocation(),
-            // Text('${_selectedPlace["lat"]} ${_selectedPlace["lon"]}'),
-            FutureBuilder<UVIData>(
-              future: _futureUVIData,
-              builder: (context, snapshot) {
-                double lottieWidth = 150;
-                double lottieHeight = 150;
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: _scaffoldBackgroundGradient,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              LocationSearchBar(onValueChanged: _updatePlace),
+              _buildLocation(),
+              FutureBuilder<UVIData>(
+                future: _futureUVIData,
+                builder: (context, snapshot) {
+                  double lottieWidth = 150;
+                  double lottieHeight = 150;
 
-                if (snapshot.hasData) {
-                  double uvIndex = snapshot.data!.uv;
-                  List<Color> backgroundColor = getBackgroundColor(uvIndex);
-                  String uvLevel = getUVLevel(uvIndex);
+                  if (snapshot.hasData) {
+                    double uvIndex = snapshot.data!.uv;
+                    
+                    // List<Color> backgroundColor = getBackgroundColor(uvIndex);
+                    String uvLevel = getUVLevel(uvIndex);
 
-                  // UV with different Animation
-                  String lottieAsset;
-                  if (uvIndex <= 2) {
-                    lottieAsset = "assets/lottie/night.json"; // UV low
-                  } else if (uvIndex <= 5) {
-                    lottieAsset = "assets/lottie/cloudy.json"; // UV Moderate
-                  } else if (uvIndex <= 7) {
-                    lottieAsset = "assets/lottie/sun.json"; // UV High
-                    lottieWidth = 250;
-                    lottieHeight = 250;
-                  } else {
-                    lottieAsset = "assets/lottie/warning.json"; // UV high
-                  }
-                  
-                  return Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: backgroundColor,
-                      ),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          elevation: 3,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: Column(
+                    // UV with different Animation
+                    String lottieAsset;
+                    if (uvIndex <= 2) {
+                      lottieAsset = "assets/lottie/night.json"; // UV low
+                    } else if (uvIndex <= 5) {
+                      lottieAsset = "assets/lottie/cloudy.json"; // UV Moderate
+                    } else if (uvIndex <= 7) {
+                      lottieAsset = "assets/lottie/sun.json"; // UV High
+                      lottieWidth = 250;
+                      lottieHeight = 200;
+                    } else {
+                      lottieAsset = "assets/lottie/warning.json"; // UV high
+                    }
+
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      width: double.infinity,
+                      // decoration: BoxDecoration(
+                      //   gradient: LinearGradient(
+                      //     begin: Alignment.topCenter,
+                      //     end: Alignment.bottomCenter,
+                      //     colors: _scaffoldBackgroundGradient,
+                      //   ),
+                      // ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            const SizedBox(height: 30),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  children: [
+                                    Lottie.asset(
+                                      lottieAsset,
+                                      width: lottieWidth,
+                                      height: lottieHeight,
+                                      repeat: true,
+                                      animate: true,
+                                    ),
+                                    const SizedBox(height: 10),
+
+                                    Text(
+                                      'UV ${snapshot.data!.uv.toInt()}',
+                                      style: const TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${DateFormat('hh:mm a').format(DateTime.now())}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Retrieved from $_uvAPISource',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                Lottie.asset(
-                                  lottieAsset,
-                                  width: lottieWidth,
-                                  height: lottieHeight,
-                                  repeat: true,
-                                  animate: true,
+                                SmallCard(
+                                  label: "UV",
+                                  value: uvLevel,
+                                  subtext: "UV Level",
                                 ),
-                                const SizedBox(height: 10),
-
-                                Text(
-                                  'UV ${snapshot.data!.uv.toInt()}',
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    fontWeight: FontWeight.bold,
+                                SmallCard(
+                                  label: "Max",
+                                  // value: uvMax.toStringAsFixed(1),
+                                  value: snapshot.data!.uv_max.toStringAsFixed(
+                                    1,
                                   ),
-                                ),
-                                Text(
-                                  '${DateFormat('hh:mm a').format(DateTime.now())}',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade700,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 4),
-                                // Text(
-                                //   'Max UV Today: ${snapshot.data!.uv_max.toInt()}',
-                                //   style: const TextStyle(
-                                //     fontSize: 18,
-                                //     fontWeight: FontWeight.w500,
-                                //   ),
-                                // ),
-                                Text(
-                                  'Retrieved from $_uvAPISource',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey.shade700,
-                                  ),
+                                  subtext: "Max UVI of Today",
                                 ),
                               ],
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SmallCard(
-                              label: "UV",
-                              value: uvLevel,
-                              subtext: "Level",
-                            ),
-                            SmallCard(
-                              label: "Max UVI Today",
-                              // value: uvMax.toStringAsFixed(1),
-                              value: snapshot.data!.uv_max.toStringAsFixed(1),
-                              subtext: "",
-                            ),
                           ],
                         ),
-                      ],
-                    ),
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
-          ],
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
