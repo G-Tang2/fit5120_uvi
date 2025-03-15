@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:onboarding/data/uvi_data.dart';
 import 'package:onboarding/widgets/location_search_bar.dart';
 import 'package:onboarding/widgets/small_card.dart';
+import 'package:onboarding/widgets/uv_legend.dart';
 import 'package:lottie/lottie.dart';
 
 Future<UVIData> fetchUVI(
@@ -191,8 +192,6 @@ class _HomePageState extends State<HomePage> {
 
                   if (snapshot.hasData) {
                     double uvIndex = snapshot.data!.uv;
-
-                    // List<Color> backgroundColor = getBackgroundColor(uvIndex);
                     String uvLevel = getUVLevel(uvIndex);
 
                     // UV with different Animation
@@ -209,13 +208,11 @@ class _HomePageState extends State<HomePage> {
                       lottieAsset = "assets/lottie/warning.json"; // UV high
                     }
 
-                    return Container(
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      width: double.infinity,
+                    return Container( 
                       child: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
-                            const SizedBox(height: 30),
+                            const SizedBox(height: 10),
                             Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -293,7 +290,11 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               ),
+                              
                             ),
+                            const SizedBox(height: 15),
+
+                              UVLegend(),
                           ],
                         ),
                       ),
