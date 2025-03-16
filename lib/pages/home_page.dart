@@ -72,13 +72,13 @@ class _HomePageState extends State<HomePage> {
   String _uvAPISource = '';
 
   String getUVLevel(double uvIndex) {
-    if (uvIndex <= 2)
+    if (uvIndex < 3)
       return "Low";
-    else if (uvIndex <= 5)
+    else if (uvIndex < 6)
       return "Moderate";
-    else if (uvIndex <= 7)
+    else if (uvIndex < 9)
       return "High";
-    else if (uvIndex <= 10)
+    else if (uvIndex < 11)
       return "Very High";
     else
       return "Extreme";
