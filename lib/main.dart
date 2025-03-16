@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/ui/main_container.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-Future main() async {
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   await dotenv.load();
-  runApp(const MyApp());
+
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_URL']!,
+    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+  );
+  runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
