@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildLocation() {
     return Card(
-      margin: EdgeInsets.all(16),
+      margin: EdgeInsets.all(16), 
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
       child: ListTile(
@@ -141,16 +141,16 @@ class _HomePageState extends State<HomePage> {
 
   // bg color
   List<Color> getBackgroundColor(double uvIndex) {
-    if (uvIndex <= 2)
+    if (uvIndex < 3)
       return [Colors.green.shade50, Colors.green.shade500];
-    else if (uvIndex <= 5)
-      return [Colors.yellow.shade100, Colors.yellow.shade500];
-    else if (uvIndex <= 7)
-      return [Colors.orange.shade100, Colors.orange.shade500];
-    else if (uvIndex <= 10)
-      return [Colors.red.shade100, Colors.red.shade500];
+    else if (uvIndex < 6)
+      return [Colors.yellow.shade50, Colors.yellow.shade500];
+    else if (uvIndex < 8)
+      return [Colors.orange.shade50, Colors.orange.shade500];
+    else if (uvIndex < 11)
+      return [Colors.red.shade50, Colors.red.shade500];
     else
-      return [Colors.purple.shade100, Colors.purple.shade500];
+      return [Colors.purple.shade50, Colors.purple.shade500];
   }
 
   List<Color> _scaffoldBackgroundGradient = [
@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
             colors: _scaffoldBackgroundGradient,
           ),
         ),
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               LocationSearchBar(onValueChanged: _updatePlace),
@@ -196,14 +196,13 @@ class _HomePageState extends State<HomePage> {
 
                     // UV with different Animation
                     String lottieAsset;
-                    if (uvIndex <= 2) {
+                    if (uvIndex < 3) {
                       lottieAsset = "assets/lottie/night.json"; // UV low
-                    } else if (uvIndex <= 5) {
+                    } else if (uvIndex < 6) {
                       lottieAsset = "assets/lottie/cloudy.json"; // UV Moderate
-                    } else if (uvIndex <= 7) {
+                    } else if (uvIndex < 8) {
                       lottieAsset = "assets/lottie/sun.json"; // UV High
-                      lottieWidth = 250;
-                      lottieHeight = 200;
+                      
                     } else {
                       lottieAsset = "assets/lottie/warning.json"; // UV high
                     }
@@ -281,7 +280,7 @@ class _HomePageState extends State<HomePage> {
                                   SmallCard(
                                     label: "Max",
                                     value:
-                                        "UV ${snapshot.data!.uv_max.toStringAsFixed(1)}",
+                                        "UV ${snapshot.data!.uv_max.toStringAsFixed(1) ?? "Not Avilable"}",
                                     subtext: DateFormat('hh:mm a').format(
                                       DateTime.parse(
                                         snapshot.data!.uv_maxTime,

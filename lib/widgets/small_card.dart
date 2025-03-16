@@ -28,12 +28,12 @@ class SmallCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.purple.shade100,
+                  color: const Color.fromARGB(255, 210, 210, 210),
                   shape: BoxShape.circle,
                 ),
                 child: Text(
                   label,
-                  style: TextStyle(color: Colors.purple.shade600),
+                  style: TextStyle(color: const Color.fromARGB(255, 128, 128, 128)),
                 ),
               ),
               const SizedBox(height: 8),
@@ -48,7 +48,7 @@ class SmallCard extends StatelessWidget {
               if (extraText != null)
                 Text(extraText!,
                     style: TextStyle(color: Colors.grey.shade600, fontSize: 14)),
-                    
+
               Text(subtext, style: TextStyle(color: Colors.grey.shade600)),
             ],
           ),
