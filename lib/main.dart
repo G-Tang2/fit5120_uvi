@@ -10,8 +10,8 @@ Future<void> main() async {
   await dotenv.load();
 
   await Supabase.initialize(
-    url: dotenv.env['SUPABASE_URL']!,
-    anonKey: dotenv.env['SUPABASE_ANON_KEY']!,
+    url: 'https://ypcslcatkqpsueuhqvdj.supabase.co',
+    anonKey: dotenv.env['SUPABASE_ANON_KEY'] as String,
   );
   runApp(MyApp());
 }
