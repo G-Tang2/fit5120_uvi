@@ -49,7 +49,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(14),
       child:TypeAheadField<Map<String, dynamic>>(
       builder: (context, _controller, focusNode) {
         return TextField(
@@ -73,7 +73,7 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
       },
       onSelected: (suggestion) {
         _changeTextFieldValue(suggestion["name"]);  // update text field with selected location
-        widget.onValueChanged({'lat': suggestion["lat"], 'lon': suggestion["lon"]});  // update coordinates for uvi
+        widget.onValueChanged({'lat': suggestion["lat"], 'lon': suggestion["lon"], 'name': suggestion["name"] });  // update coordinates for uvi
       },
       )
     );

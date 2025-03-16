@@ -6,9 +6,16 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:onboarding/data/uvi_data.dart';
 import 'package:onboarding/widgets/location_search_bar.dart';
+import 'package:onboarding/widgets/small_card.dart';
+import 'package:onboarding/widgets/uv_legend.dart';
+import 'package:lottie/lottie.dart';
 
-Future<UVIData> fetchUVI(Map<String, dynamic> place, Function(String) updateSource) async{
-  final String apiUrl = "https://api.openuv.io/api/v1/uv?lat=${place['lat']}&lng=${place['long']}&alt=100&dt=";
+Future<UVIData> fetchUVI(
+  Map<String, dynamic> place,
+  Function(String) updateSource,
+) async {
+  final String apiUrl =
+      "https://api.openuv.io/api/v1/uv?lat=${place['lat']}&lng=${place['lon']}&alt=100&dt=";
   final String accessToken = dotenv.get('OPEN_UV_API_KEY');
 
   try {
@@ -19,27 +26,34 @@ Future<UVIData> fetchUVI(Map<String, dynamic> place, Function(String) updateSour
         "Content-Type": "application/json",
       },
     );
+    // print(" ${response.statusCode}");
+    // print("API Response: ${response.body}");
+    // print("API Request: $apiUrl");
 
     if (response.statusCode == 200) {
       updateSource('https://www.openuv.io/');
       return UVIData.fromJson(jsonDecode(response.body));
     } else {
-        throw Exception('Failed to load UVI data');
+      throw Exception('Failed to load UVI data');
     }
   } catch (e) {
     // attempt to get UVI data from another source
-      try {
-          final response = await http.get(Uri.parse('https://currentuvindex.com/api/v1/uvi?latitude=${place['lat']}&longitude=${place['lon']}'));
+    try {
+      final response = await http.get(
+        Uri.parse(
+          'https://currentuvindex.com/api/v1/uvi?latitude=${place['lat']}&longitude=${place['lon']}',
+        ),
+      );
 
-          if (response.statusCode == 200) {
-            updateSource('https://currentuvindex.com');
-            return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
-          } else {
-            throw Exception('Failed to load UVI data');
-          }
-      } catch (e) {
+      if (response.statusCode == 200) {
+        updateSource('https://currentuvindex.com');
+        return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
+      } else {
         throw Exception('Failed to load UVI data');
       }
+    } catch (e) {
+      throw Exception('Failed to load UVI data');
+    }
   }
 }
 
@@ -52,16 +66,37 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Map<String, dynamic> _selectedPlace = {"lat":0.0, "lon":0.0};   //TODO: change to current location
+  // Map<String, dynamic> _selectedPlace = {"lat":0.0, "lon":0.0};   //TODO: change to current location
+  Map<String, dynamic> _selectedPlace = {"lat": -37.8142, "lon": 144.9631};
   late Future<UVIData> _futureUVIData;
   String _uvAPISource = '';
-  Color _sunColor = Colors.yellow;
+
+  String getUVLevel(double uvIndex) {
+    if (uvIndex <= 2)
+      return "Low";
+    else if (uvIndex <= 5)
+      return "Moderate";
+    else if (uvIndex <= 7)
+      return "High";
+    else if (uvIndex <= 10)
+      return "Very High";
+    else
+      return "Extreme";
+  }
+
+  String _selectedPlaceName = "Melbourne, Australia";
 
   void _updatePlace(Map<String, dynamic> place) {
     setState(() {
       _selectedPlace = place;
+      _selectedPlaceName = place["name"] ?? "Unknown Location";
     });
-    _futureUVIData = fetchUVI(place, _updateSource);
+    _futureUVIData = fetchUVI(place, _updateSource).then((data) {
+      setState(() {
+        _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
+      });
+      return data;
+    });
   }
 
   void _updateSource(String source) {
@@ -74,9 +109,60 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     //TODO: get current coordinates
-    _futureUVIData = fetchUVI({'lat': -37.8142454, 'lon': 144.9631732}, _updateSource);
+    _futureUVIData = fetchUVI({
+      'lat': -37.8142454,
+      'lon': 144.9631732,
+    }, _updateSource).then((data) {
+      setState(() {
+        _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
+      });
+      return data;
+    });
   }
 
+  Widget _buildLocation() {
+    return Card(
+      margin: EdgeInsets.all(16), 
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 4,
+      child: ListTile(
+        leading: Icon(Icons.location_on, color: Colors.redAccent),
+        title: Text(
+          _selectedPlaceName,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        // subtitle: Text("Current Location"),
+        subtitle: Text(
+          'Lat: ${_selectedPlace["lat"]}, Lon: ${_selectedPlace["lon"]}',
+        ),
+      ),
+    );
+  }
+
+  // bg color
+  List<Color> getBackgroundColor(double uvIndex) {
+    if (uvIndex < 3)
+      return [Colors.green.shade50, Colors.green.shade500];
+    else if (uvIndex < 6)
+      return [Colors.yellow.shade50, Colors.yellow.shade500];
+    else if (uvIndex < 8)
+      return [Colors.orange.shade50, Colors.orange.shade500];
+    else if (uvIndex < 11)
+      return [Colors.red.shade50, Colors.red.shade500];
+    else
+      return [Colors.purple.shade50, Colors.purple.shade500];
+  }
+
+  List<Color> _scaffoldBackgroundGradient = [
+    Colors.blue.shade100,
+    Colors.blue.shade50,
+  ];
+
+  void _updateBackgroundGradient(double uvIndex) {
+    setState(() {
+      _scaffoldBackgroundGradient = getBackgroundColor(uvIndex);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,32 +171,144 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(children: <Widget>[
-          LocationSearchBar(onValueChanged: _updatePlace),
-          Text('${_selectedPlace["lat"]} ${_selectedPlace["lon"]}'),
-          FutureBuilder<UVIData>(
-              future: _futureUVIData,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(Icons.wb_sunny, color: _sunColor, size: 100),
-                      Text('UV ${snapshot.data!.uv.toInt().toString()}'),
-                      Text('Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}'),
-                      Text('Retrieved from $_uvAPISource'),
-                    ]
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.error}');
-                } else {
-                  return CircularProgressIndicator();
-                }
-              },
-            ),
-        ])
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: _scaffoldBackgroundGradient,
+          ),
         ),
-      );
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              LocationSearchBar(onValueChanged: _updatePlace),
+              _buildLocation(),
+              FutureBuilder<UVIData>(
+                future: _futureUVIData,
+                builder: (context, snapshot) {
+                  double lottieWidth = 150;
+                  double lottieHeight = 150;
+
+                  if (snapshot.hasData) {
+                    double uvIndex = snapshot.data!.uv;
+                    String uvLevel = getUVLevel(uvIndex);
+
+                    // UV with different Animation
+                    String lottieAsset;
+                    if (uvIndex < 3) {
+                      lottieAsset = "assets/lottie/night.json"; // UV low
+                    } else if (uvIndex < 6) {
+                      lottieAsset = "assets/lottie/cloudy.json"; // UV Moderate
+                    } else if (uvIndex < 8) {
+                      lottieAsset = "assets/lottie/sun.json"; // UV High
+                      
+                    } else {
+                      lottieAsset = "assets/lottie/warning.json"; // UV high
+                    }
+
+                    return Container( 
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: <Widget>[
+                            const SizedBox(height: 10),
+                            Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  children: [
+                                    Lottie.asset(
+                                      lottieAsset,
+                                      width: lottieWidth,
+                                      height: lottieHeight,
+                                      repeat: true,
+                                      animate: true,
+                                    ),
+                                    const SizedBox(height: 10),
+
+                                    Text(
+                                      'UV ${snapshot.data!.uv.toInt()}',
+                                      style: const TextStyle(
+                                        fontSize: 26,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${DateFormat('hh:mm a').format(DateTime.now())}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Text(
+                                      'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      'Retrieved from $_uvAPISource',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SmallCard(
+                                    label: "UV",
+                                    value: uvLevel,
+                                    subtext: "UV Level",
+                                  ),
+                                  SmallCard(
+                                    label: "Max",
+                                    value:
+                                        "UV ${snapshot.data!.uv_max.toStringAsFixed(1) ?? "Not Avilable"}",
+                                    subtext: DateFormat('hh:mm a').format(
+                                      DateTime.parse(
+                                        snapshot.data!.uv_maxTime,
+                                      ).toLocal(),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              
+                            ),
+                            const SizedBox(height: 15),
+
+                              UVLegend(),
+                          ],
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('${snapshot.error}');
+                  } else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
