@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:onboarding/data/uvi_data.dart';
@@ -16,9 +15,10 @@ Future<UVIData> fetchUVI(
 ) async {
   final String apiUrl =
       "https://api.openuv.io/api/v1/uv?lat=${place['lat']}&lng=${place['lon']}&alt=100&dt=";
-  final String accessToken = dotenv.get('OPEN_UV_API_KEY');
 
   try {
+    // first api key
+    final String accessToken = 'openuv-c10rrm87499zf-io';
     final response = await http.get(
       Uri.parse(apiUrl),
       headers: {
@@ -26,9 +26,6 @@ Future<UVIData> fetchUVI(
         "Content-Type": "application/json",
       },
     );
-    // print(" ${response.statusCode}");
-    // print("API Response: ${response.body}");
-    // print("API Request: $apiUrl");
 
     if (response.statusCode == 200) {
       updateSource('https://www.openuv.io/');
@@ -37,22 +34,43 @@ Future<UVIData> fetchUVI(
       throw Exception('Failed to load UVI data');
     }
   } catch (e) {
-    // attempt to get UVI data from another source
+    // second api key
+    final String accessToken = 'openuv-g7rm82jbcbg-io';
+
     try {
       final response = await http.get(
-        Uri.parse(
-          'https://currentuvindex.com/api/v1/uvi?latitude=${place['lat']}&longitude=${place['lon']}',
-        ),
+        Uri.parse(apiUrl),
+        headers: {
+          "x-access-token": accessToken,
+          "Content-Type": "application/json",
+        },
       );
 
       if (response.statusCode == 200) {
-        updateSource('https://currentuvindex.com');
-        return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
+        updateSource('https://www.openuv.io/');
+        return UVIData.fromJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to load UVI data');
       }
-    } catch (e) {
-      throw Exception('Failed to load UVI data');
+    }
+    catch (e) {
+      //attempt to get UVI data from another source
+      try {
+        final response = await http.get(
+          Uri.parse(
+            'https://currentuvindex.com/api/v1/uvi?latitude=${place['lat']}&longitude=${place['lon']}',
+          ),
+        );
+
+        if (response.statusCode == 200) {
+          updateSource('https://currentuvindex.com');
+          return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
+        } else {
+          throw Exception('Failed to load UVI data');
+        }
+      } catch (e) {
+        throw Exception('Failed to load UVI data');
+    }
     }
   }
 }
