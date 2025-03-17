@@ -142,15 +142,15 @@ class _HomePageState extends State<HomePage> {
   // bg color
   List<Color> getBackgroundColor(double uvIndex) {
     if (uvIndex < 3)
-      return [Colors.green.shade50, Colors.green.shade500];
+      return [Colors.blue.shade50, Colors.green.shade500];
     else if (uvIndex < 6)
-      return [Colors.yellow.shade50, Colors.yellow.shade500];
+      return [Colors.blue.shade50, Colors.yellow.shade500];
     else if (uvIndex < 8)
-      return [Colors.orange.shade50, Colors.orange.shade500];
+      return [Colors.blue.shade50, Colors.orange.shade500];
     else if (uvIndex < 11)
-      return [Colors.red.shade50, Colors.red.shade500];
+      return [Colors.blue.shade50, Colors.red.shade500];
     else
-      return [Colors.purple.shade50, Colors.purple.shade500];
+      return [Colors.blue.shade50, Colors.purple.shade500];
   }
 
   List<Color> _scaffoldBackgroundGradient = [
@@ -167,10 +167,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
+      // appBar: AppBar(
+        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // title: Text(widget.title),
+      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -228,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                                       repeat: true,
                                       animate: true,
                                     ),
-                                    const SizedBox(height: 10),
+                                    const SizedBox(height: 30),
 
                                     Text(
                                       'UV ${snapshot.data!.uv.toInt()}',
@@ -237,13 +237,13 @@ class _HomePageState extends State<HomePage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text(
-                                      '${DateFormat('hh:mm a').format(DateTime.now())}',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
+                                    // Text(
+                                    //   '${DateFormat('hh:mm a').format(DateTime.now())}',
+                                    //   style: const TextStyle(
+                                    //     fontSize: 16,
+                                    //     fontWeight: FontWeight.w500,
+                                    //   ),
+                                    // ),
                                     const SizedBox(height: 20),
                                     Text(
                                       'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
@@ -265,7 +265,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 20),
+                            const SizedBox(height: 30),
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16),
                               child: Row(
@@ -291,7 +291,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               
                             ),
-                            const SizedBox(height: 15),
+                            const SizedBox(height: 30),
 
                               UVLegend(),
                           ],

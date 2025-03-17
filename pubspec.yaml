@@ -70,6 +70,8 @@ flutter:
     - assets/lottie/sun.json
     - assets/lottie/warning.json
     - assets/lottie/cloudy.json
+    - assets/lottie/v_age.JPG
+    - assets/lottie/v_gender.JPG
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
