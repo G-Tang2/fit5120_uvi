@@ -99,7 +99,6 @@ class _WebNavbarState extends State<WebNavbar> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      // constraints: BoxConstraints(minWidth: 500, maxWidth: 900),
       decoration: BoxDecoration(
         color: Colors.blue.shade50,
         boxShadow: [
@@ -111,51 +110,44 @@ class _WebNavbarState extends State<WebNavbar> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              const Text(
-                "🌞 UVFind",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.deepOrange,
-                ),
-              ),
-            ],
+      children: [
+        const Text(
+          "🌞 UVFind",
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.bold,
+            color: Colors.deepOrange,
           ),
-const Spacer(),
-          Expanded(
-            child: Center(
-              child: Row(
-                children: List.generate(_menuItems.length, (index) {
-                  return GestureDetector(
-                    onTap: () => _onMenuTap(index),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        _menuItems[index],
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight:
-                              _selectedIndex == index
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                          color:
-                              _selectedIndex == index
-                                  ? Colors.deepOrange
-                                  : Colors.black87,
-                        ),
-                      ),
+        ),
+
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end, 
+            children: List.generate(_menuItems.length, (index) {
+              return GestureDetector(
+                onTap: () => _onMenuTap(index),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    _menuItems[index],
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight:
+                          _selectedIndex == index
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                      color:
+                          _selectedIndex == index
+                              ? Colors.deepOrange
+                              : Colors.black87,
                     ),
-                  );
-                }),
-              ),
-            ),
+                  ),
+                ),
+              );
+            }),
           ),
-          const Spacer(),
-        ],
+        ),
+      ],
       ),
     );
   }
@@ -187,7 +179,7 @@ class _MainContainerState extends State<MainContainer> {
     return Scaffold(
       body: Column(
         children: [
-          WebNavbar(onItemSelected: _onPageSelected),
+          // WebNavbar(onItemSelected: _onPageSelected),
           Expanded(
             child: Row(
               children: [
@@ -195,11 +187,17 @@ class _MainContainerState extends State<MainContainer> {
 
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 900),
-                  child: Center(
-                    child: IndexedStack(
-                      index: _selectedIndex,
-                      children: _pages,
-                    ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      WebNavbar(onItemSelected: _onPageSelected),
+                      Expanded(
+                        child: IndexedStack(
+                          index: _selectedIndex,
+                          children: _pages,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
