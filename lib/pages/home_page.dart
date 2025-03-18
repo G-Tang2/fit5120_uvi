@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:link_text/link_text.dart';
 import 'package:onboarding/data/uvi_data.dart';
 import 'package:onboarding/widgets/location_search_bar.dart';
 import 'package:onboarding/widgets/small_card.dart';
@@ -14,30 +15,6 @@ Future<UVIData> fetchUVI(
   Map<String, dynamic> place,
   Function(String) updateSource,
 ) async {
-  final String apiUrl =
-      "https://api.openuv.io/api/v1/uv?lat=${place['lat']}&lng=${place['lon']}&alt=100&dt=";
-  final String accessToken = dotenv.get('OPEN_UV_API_KEY');
-
-  try {
-    final response = await http.get(
-      Uri.parse(apiUrl),
-      headers: {
-        "x-access-token": accessToken,
-        "Content-Type": "application/json",
-      },
-    );
-    // print(" ${response.statusCode}");
-    // print("API Response: ${response.body}");
-    // print("API Request: $apiUrl");
-
-    if (response.statusCode == 200) {
-      updateSource('https://www.openuv.io/');
-      return UVIData.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed to load UVI data');
-    }
-  } catch (e) {
-    // attempt to get UVI data from another source
     try {
       final response = await http.get(
         Uri.parse(
@@ -46,7 +23,6 @@ Future<UVIData> fetchUVI(
       );
 
       if (response.statusCode == 200) {
-        updateSource('https://currentuvindex.com');
         return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
       } else {
         throw Exception('Failed to load UVI data');
@@ -55,7 +31,6 @@ Future<UVIData> fetchUVI(
       throw Exception('Failed to load UVI data');
     }
   }
-}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -254,9 +229,9 @@ class _HomePageState extends State<HomePage> {
                                     ),
 
                                     const SizedBox(height: 4),
-                                    Text(
-                                      'Retrieved from $_uvAPISource',
-                                      style: TextStyle(
+                                    LinkText(
+                                      'Retrieved from https://currentuvindex.com',
+                                      textStyle: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey.shade700,
                                       ),
@@ -265,33 +240,34 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 30),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SmallCard(
-                                    label: "UV",
-                                    value: uvLevel,
-                                    subtext: "UV Level",
-                                  ),
-                                  SmallCard(
-                                    label: "Max",
-                                    value:
-                                        "UV ${snapshot.data!.uv_max.toStringAsFixed(1) ?? "Not Avilable"}",
-                                    subtext: DateFormat('hh:mm a').format(
-                                      DateTime.parse(
-                                        snapshot.data!.uv_maxTime,
-                                      ).toLocal(),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            // Displays UV level category and max UV (dependent on openUV)
+                            // const SizedBox(height: 30),
+                            // Padding(
+                            //   padding: EdgeInsets.symmetric(horizontal: 16),
+                            //   child: Row(
+                            //     mainAxisAlignment:
+                            //         MainAxisAlignment.spaceEvenly,
+                            //     children: [
+                            //       SmallCard(
+                            //         label: "UV",
+                            //         value: uvLevel,
+                            //         subtext: "UV Level",
+                            //       ),
+                            //       SmallCard(
+                            //         label: "Max",
+                            //         value:
+                            //             "UV ${snapshot.data!.uv_max.toStringAsFixed(1) ?? "Not Avilable"}",
+                            //         subtext: DateFormat('hh:mm a').format(
+                            //           DateTime.parse(
+                            //             snapshot.data!.uv_maxTime,
+                            //           ).toLocal(),
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
                               
-                            ),
-                            const SizedBox(height: 30),
+                            // ),
+                            // const SizedBox(height: 30),
 
                               UVLegend(),
                           ],
