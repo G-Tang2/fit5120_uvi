@@ -13,7 +13,6 @@ import 'package:lottie/lottie.dart';
 
 Future<UVIData> fetchUVI(
   Map<String, dynamic> place,
-  Function(String) updateSource,
 ) async {
     try {
       final response = await http.get(
@@ -44,7 +43,6 @@ class _HomePageState extends State<HomePage> {
   // Map<String, dynamic> _selectedPlace = {"lat":0.0, "lon":0.0};   //TODO: change to current location
   Map<String, dynamic> _selectedPlace = {"lat": -37.8142, "lon": 144.9631};
   late Future<UVIData> _futureUVIData;
-  String _uvAPISource = '';
 
   String getUVLevel(double uvIndex) {
     if (uvIndex < 3)
@@ -66,17 +64,11 @@ class _HomePageState extends State<HomePage> {
       _selectedPlace = place;
       _selectedPlaceName = place["name"] ?? "Unknown Location";
     });
-    _futureUVIData = fetchUVI(place, _updateSource).then((data) {
+    _futureUVIData = fetchUVI(place).then((data) {
       setState(() {
         _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
       });
       return data;
-    });
-  }
-
-  void _updateSource(String source) {
-    setState(() {
-      _uvAPISource = source;
     });
   }
 
@@ -87,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     _futureUVIData = fetchUVI({
       'lat': -37.8142454,
       'lon': 144.9631732,
-    }, _updateSource).then((data) {
+    }).then((data) {
       setState(() {
         _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
       });
