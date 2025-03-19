@@ -145,8 +145,15 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: Column(children:[
+        Container(
+        padding: EdgeInsets.all(30),
         decoration: BoxDecoration(
+          border: Border.all(
+            color: Colors.blue.shade200.withValues(alpha: 0.2),
+            width: 2,
+          ),
+          
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -156,13 +163,11 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 40),
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
+              const Column(
                   children: [
-                    Text(
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Text(
                       "Australia UV Index Tracker",
                       style: TextStyle(
                         fontSize: 38,
@@ -177,21 +182,18 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       textAlign: TextAlign.center,
+                      )
                     ),
-                    SizedBox(height: 10),
                     Text(
-                      "Search real-time UV levels in Australian locations and stay sun-safe!",
-                      style: TextStyle(fontSize: 18, color: Colors.black54),
-                      textAlign: TextAlign.center,
+                        "Search real-time UV levels in Australian locations and stay sun-safe!",
+                        style: TextStyle(fontSize: 18, color: Colors.black54),
+                        textAlign: TextAlign.center,
                     ),
                   ],
                 ),
-              ),
 
-              const SizedBox(height: 20),
-
-              SizedBox(
-                width: 600,
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
                 child: LocationSearchBar(onValueChanged: _updatePlace),
               ),
 
@@ -285,20 +287,6 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                       ),
                                     ),
-                                    // Text(
-                                    //   'UV ${snapshot.data!.uv.toInt()}',
-                                    //   style: const TextStyle(
-                                    //     fontSize: 26,
-                                    //     fontWeight: FontWeight.bold,
-                                    //   ),
-                                    // ),
-                                    // Text(
-                                    //   '${DateFormat('hh:mm a').format(DateTime.now())}',
-                                    //   style: const TextStyle(
-                                    //     fontSize: 16,
-                                    //     fontWeight: FontWeight.w500,
-                                    //   ),
-                                    // ),
                                     const SizedBox(height: 20),
                                     Text(
                                       'Last Updated: ${DateFormat('E dd/MM, hh:mm a').format(DateTime.parse(snapshot.data!.uvTime.toString()).toLocal())}',
@@ -369,6 +357,8 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
+      Expanded(child:Container(color: Colors.blue.shade50,))
+      ]),
     );
   }
 }

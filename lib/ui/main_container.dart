@@ -100,14 +100,14 @@ class _WebNavbarState extends State<WebNavbar> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        color: Colors.blue.shade200.withValues(alpha: 1),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: Colors.black.withOpacity(0.1),
+        //     blurRadius: 5,
+        //     offset: const Offset(0, 3),
+        //   ),
+        // ],
       ),
       child: Row(
       children: [
@@ -179,12 +179,10 @@ class _MainContainerState extends State<MainContainer> {
     return Scaffold(
       body: Column(
         children: [
-          // WebNavbar(onItemSelected: _onPageSelected),
           Expanded(
             child: Row(
               children: [
                 Expanded(child: Container(color: Colors.blue.shade50)),
-
                 ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 900),
                   child: Column(
