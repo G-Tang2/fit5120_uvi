@@ -9,27 +9,26 @@ import 'package:onboarding/data/uvi_data.dart';
 import 'package:onboarding/widgets/location_search_bar.dart';
 import 'package:onboarding/widgets/small_card.dart';
 import 'package:onboarding/widgets/uv_legend.dart';
+import 'package:onboarding/widgets/uv_advice.dart';
 import 'package:lottie/lottie.dart';
 
-Future<UVIData> fetchUVI(
-  Map<String, dynamic> place,
-) async {
-    try {
-      final response = await http.get(
-        Uri.parse(
-          'https://currentuvindex.com/api/v1/uvi?latitude=${place['lat']}&longitude=${place['lon']}',
-        ),
-      );
+Future<UVIData> fetchUVI(Map<String, dynamic> place) async {
+  try {
+    final response = await http.get(
+      Uri.parse(
+        'https://currentuvindex.com/api/v1/uvi?latitude=${place['lat']}&longitude=${place['lon']}',
+      ),
+    );
 
-      if (response.statusCode == 200) {
-        return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
-      } else {
-        throw Exception('Failed to load UVI data');
-      }
-    } catch (e) {
+    if (response.statusCode == 200) {
+      return UVIData.fromCurrentUVAPIJson(jsonDecode(response.body));
+    } else {
       throw Exception('Failed to load UVI data');
     }
+  } catch (e) {
+    throw Exception('Failed to load UVI data');
   }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -76,10 +75,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     //TODO: get current coordinates
-    _futureUVIData = fetchUVI({
-      'lat': -37.8142454,
-      'lon': 144.9631732,
-    }).then((data) {
+    _futureUVIData = fetchUVI({'lat': -37.8142454, 'lon': 144.9631732}).then((
+      data,
+    ) {
       setState(() {
         _scaffoldBackgroundGradient = getBackgroundColor(data.uv);
       });
@@ -89,7 +87,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildLocation() {
     return Card(
-      margin: EdgeInsets.all(16), 
+      margin: EdgeInsets.all(16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
       child: ListTile(
@@ -120,6 +118,19 @@ class _HomePageState extends State<HomePage> {
       return [Colors.blue.shade50, Colors.purple.shade500];
   }
 
+  Color getUVLColor(double uvIndex) {
+    if (uvIndex < 3)
+      return Colors.green;
+    else if (uvIndex < 6)
+      return Colors.yellow;
+    else if (uvIndex < 8)
+      return Colors.orange;
+    else if (uvIndex < 11)
+      return Colors.red;
+    else
+      return Colors.purple;
+  }
+
   List<Color> _scaffoldBackgroundGradient = [
     Colors.blue.shade100,
     Colors.blue.shade50,
@@ -134,10 +145,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-        // backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // title: Text(widget.title),
-      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -149,8 +156,47 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              LocationSearchBar(onValueChanged: _updatePlace),
-              _buildLocation(),
+              const SizedBox(height: 40),
+
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    Text(
+                      "Australia UV Index Tracker",
+                      style: TextStyle(
+                        fontSize: 38,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blueAccent,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4.0,
+                            color: Colors.black26,
+                            offset: Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Search real-time UV levels in Australian locations and stay sun-safe!",
+                      style: TextStyle(fontSize: 18, color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              SizedBox(
+                width: 600,
+                child: LocationSearchBar(onValueChanged: _updatePlace),
+              ),
+
+              SizedBox(width: 600, child: _buildLocation()),
+
               FutureBuilder<UVIData>(
                 future: _futureUVIData,
                 builder: (context, snapshot) {
@@ -169,12 +215,11 @@ class _HomePageState extends State<HomePage> {
                       lottieAsset = "assets/lottie/cloudy.json"; // UV Moderate
                     } else if (uvIndex < 8) {
                       lottieAsset = "assets/lottie/sun.json"; // UV High
-                      
                     } else {
                       lottieAsset = "assets/lottie/warning.json"; // UV high
                     }
 
-                    return Container( 
+                    return Container(
                       child: SingleChildScrollView(
                         child: Column(
                           children: <Widget>[
@@ -197,13 +242,56 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     const SizedBox(height: 30),
 
-                                    Text(
-                                      'UV ${snapshot.data!.uv.toInt()}',
-                                      style: const TextStyle(
-                                        fontSize: 26,
-                                        fontWeight: FontWeight.bold,
+                                    SizedBox(
+                                      width: 300, 
+                                      child: Divider(
+                                        color: Colors.grey.shade400,
+                                        thickness: 1.2, 
                                       ),
                                     ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      "Current UV Index",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    Container(
+                                      width: 80,
+                                      height: 80,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: getUVLColor(snapshot.data!.uv),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Colors.black26,
+                                            blurRadius: 6,
+                                            offset: Offset(2, 2),
+                                          ),
+                                        ],
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "UV ${snapshot.data!.uv.toInt()}",
+
+                                          style: TextStyle(
+                                            fontSize: 28,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // Text(
+                                    //   'UV ${snapshot.data!.uv.toInt()}',
+                                    //   style: const TextStyle(
+                                    //     fontSize: 26,
+                                    //     fontWeight: FontWeight.bold,
+                                    //   ),
+                                    // ),
                                     // Text(
                                     //   '${DateFormat('hh:mm a').format(DateTime.now())}',
                                     //   style: const TextStyle(
@@ -232,36 +320,40 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                             ),
-                            // Displays UV level category and max UV (dependent on openUV)
-                            // const SizedBox(height: 30),
-                            // Padding(
-                            //   padding: EdgeInsets.symmetric(horizontal: 16),
-                            //   child: Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceEvenly,
-                            //     children: [
-                            //       SmallCard(
-                            //         label: "UV",
-                            //         value: uvLevel,
-                            //         subtext: "UV Level",
-                            //       ),
-                            //       SmallCard(
-                            //         label: "Max",
-                            //         value:
-                            //             "UV ${snapshot.data!.uv_max.toStringAsFixed(1) ?? "Not Avilable"}",
-                            //         subtext: DateFormat('hh:mm a').format(
-                            //           DateTime.parse(
-                            //             snapshot.data!.uv_maxTime,
-                            //           ).toLocal(),
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                              
-                            // ),
-                            // const SizedBox(height: 30),
 
-                              UVLegend(),
+                            // Displays UV level category and max UV (dependent on openUV)
+                            const SizedBox(height: 30),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SmallCard(
+                                    label: "UV",
+                                    value: uvLevel,
+                                    subtext: "UV Level",
+                                  ),
+                                  SmallCard(
+                                    label: "FP",
+                                    value:
+                                        "UV ${snapshot.data!.uv_futrue_one.toStringAsFixed(1) ?? "Not Avilable"}",
+                                    subtext:
+                                        "UVI forecast at: " +
+                                        DateFormat('hh:mm a').format(
+                                          DateTime.parse(
+                                            snapshot.data!.uvTime_future_one
+                                                .toString(),
+                                          ).toLocal(),
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 30),
+                            UVLegend(),
+                            const SizedBox(height: 20),
+                            UVAdvice(uvIndex: uvIndex),
                           ],
                         ),
                       ),

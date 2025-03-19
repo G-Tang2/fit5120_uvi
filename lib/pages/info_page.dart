@@ -56,7 +56,8 @@ class _InfoPageState extends State<InfoPage> with SingleTickerProviderStateMixin
   }
 
   Widget _buildContent(String type) {
-    return Column(
+    return 
+    Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Card(
@@ -92,7 +93,7 @@ class _InfoPageState extends State<InfoPage> with SingleTickerProviderStateMixin
             ),
           ),
         ],
-      );
+    );
   }
 
   @override
