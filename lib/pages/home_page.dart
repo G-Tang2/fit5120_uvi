@@ -145,7 +145,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(children:[
+      body: SingleChildScrollView(child: Column(children:[
         Container(
         padding: EdgeInsets.all(30),
         decoration: BoxDecoration(
@@ -365,7 +365,7 @@ class _HomePageState extends State<HomePage> {
       //       repeat: ImageRepeat.repeat
       //     ),
       //   ),))
-      ]),
+      ])),
     );
   }
 }
