@@ -58,40 +58,28 @@ class _InfoPageState extends State<InfoPage> with SingleTickerProviderStateMixin
   Widget _buildContent(String type) {
     return 
     Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Card(
+          Container(
+          padding: const EdgeInsets.all(0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+            color: Color(0xFFFFE3B3)
+          ),
+          child: Card(
             elevation: 5,
+            color: Color(0xFFFFE3B3),
             margin: const EdgeInsets.all(20.0),
             child: Padding(
               padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
-                  Image.asset(images[type]!, fit: BoxFit.contain),
-                  
-                  const SizedBox(height: 5),
+                  Image.asset(images[type]!),
                 ],
+                ),
               ),
             ),
           ),
-          Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: imageData[type]![0]
-                    .map((header) => DataColumn(label: Text(header)))
-                    .toList(),
-                rows: imageData[type]!
-                    .sublist(1)
-                    .map((row) => DataRow(
-                          cells: row
-                              .map((cell) => DataCell(Text(cell)))
-                              .toList(),
-                        ))
-                    .toList(),
-              ),
-            ),
-          ),
+          // Expanded(child:Container(color: Colors.blue.shade50,))
         ],
     );
   }
@@ -99,11 +87,16 @@ class _InfoPageState extends State<InfoPage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Scaffold(
       appBar: AppBar(
         title: Text("Data Information about UV impact"),
+        centerTitle: true,
+        backgroundColor: Color(0xFFF8BC9B).withValues(alpha: 0.8),
         bottom: TabBar(
           controller: _tabController,
+          indicatorColor: Color(0xFFF89B9B),
           tabs: const [
             Tab(text: 'By Gender'),
             Tab(text: 'By Age'),
@@ -116,30 +109,7 @@ class _InfoPageState extends State<InfoPage> with SingleTickerProviderStateMixin
           _buildContent('gender'),
           _buildContent('age'),
         ],
-      ),
-      // body: Center(
-      //   // Center is a layout widget. It takes a single child and positions it
-      //   // in the middle of the parent.
-      //   child: Column(
-      //     // Column is also a layout widget. It takes a list of children and
-      //     // arranges them vertically. By default, it sizes itself to fit its
-      //     // children horizontally, and tries to be as tall as its parent.
-      //     //
-      //     // Column has various properties to control how it sizes itself and
-      //     // how it positions its children. Here we use mainAxisAlignment to
-      //     // center the children vertically; the main axis here is the vertical
-      //     // axis because Columns are vertical (the cross axis would be
-      //     // horizontal).
-      //     //
-      //     // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-      //     // action in the IDE, or press "p" in the console), to see the
-      //     // wireframe for each widget.
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: <Widget>[
-      //       const Text('This is the Information Page'),
-      //     ],
-      //   ),
-      // ),
+      ),)
     );
   }
 }

@@ -1,79 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/pages/home_page.dart';
 import 'package:onboarding/pages/info_page.dart';
-// import 'package:onboarding/pages/settings_page.dart';
 
-// class MainContainer extends StatefulWidget {
-//   const MainContainer({super.key});
-
-//   @override
-//   State<MainContainer> createState() => _MainContainerState();
-// }
-
-// class _MainContainerState extends State<MainContainer> {
-//   late TabController _tabController;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _tabController = TabController(length: 2, vsync: this);
-//   }
-
-//   @override
-//   void dispose() {
-//     _tabController.dispose();
-//     super.dispose();
-//   }
-//   // int _selectedIndex = 0;
-
-//   // final List<Widget> _pages = [
-//   //   HomePage(title: "Home Page"),
-//   //   InfoPage(title: "Info Page"),
-//   //   // SettingsPage(title: "Settings Page"),
-//   // ];
-
-//   // void _onItemTapped(int index) {
-//   //   setState(() {
-//   //     _selectedIndex = index;
-//   //   });
-//   // }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       // body: IndexedStack(
-//       //   index: _selectedIndex,
-//       //   children: _pages,
-//       // ),
-//       appBar: AppBar(
-//         title: const Text("My App"),
-//         bottom: TabBar(
-//           controller: _tabController,
-//           tabs: const [
-//             Tab(icon: Icon(Icons.home), text: "Home"),
-//             Tab(icon: Icon(Icons.info), text: "Info"),
-//           ],
-//         ),
-//       ),
-//       body: TabBarView(
-//         controller: _tabController,
-//         children: const [
-//           HomePage(title: "Home Page"),
-//           InfoPage(title: "Info Page"),
-//         ],
-//       ),
-//       // bottomNavigationBar: BottomNavigationBar(
-//       //   currentIndex: _selectedIndex,
-//       //   onTap: _onItemTapped,
-//       //   items: const [
-//       //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-//       //     BottomNavigationBarItem(icon: Icon(Icons.info), label: 'Info'),
-//       //     // BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-//       //   ],
-//       // ),
-//     );
-//   }
-// }
 class WebNavbar extends StatefulWidget {
   final Function(int) onItemSelected;
 
@@ -100,14 +28,8 @@ class _WebNavbarState extends State<WebNavbar> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.blue.shade200.withValues(alpha: 1),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: Colors.black.withOpacity(0.1),
-        //     blurRadius: 5,
-        //     offset: const Offset(0, 3),
-        //   ),
-        // ],
+        color: Color(0xFF75BDE0),
+        borderRadius: BorderRadius.circular(16)
       ),
       child: Row(
       children: [
@@ -177,34 +99,55 @@ class _MainContainerState extends State<MainContainer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(child: Container(color: Colors.blue.shade50)),
-                ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 900),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      WebNavbar(onItemSelected: _onPageSelected),
-                      Expanded(
-                        child: IndexedStack(
-                          index: _selectedIndex,
-                          children: _pages,
+      body: Container(
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: AssetImage("images/background.jpeg"),
+        //     fit: BoxFit.none,
+        //     repeat: ImageRepeat.repeat
+        //   ),
+        // ),
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(child: Container(
+                    // color: Colors.blue.shade50
+                    )),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 900),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          height: 20,
+                          // color: Colors.blue.shade50,
                         ),
-                      ),
-                    ],
+                        WebNavbar(onItemSelected: _onPageSelected),
+                        Container(
+                          height: 20,
+                          // color: Colors.blue.shade50,
+                        ),
+                        Expanded(
+                          child: IndexedStack(
+                            index: _selectedIndex,
+                            children: _pages,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
 
-                Expanded(child: Container(color: Colors.blue.shade50)),
-              ],
+                  Expanded(child: Container(
+                    // color: Colors.blue.shade50
+                    )),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 }

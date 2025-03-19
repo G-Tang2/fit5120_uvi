@@ -149,6 +149,7 @@ class _HomePageState extends State<HomePage> {
         Container(
         padding: EdgeInsets.all(30),
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: Colors.blue.shade200.withValues(alpha: 0.2),
             width: 2,
@@ -357,7 +358,13 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      Expanded(child:Container(color: Colors.blue.shade50,))
+      // Expanded(child:Container(        decoration: BoxDecoration(
+      //     image: DecorationImage(
+      //       image: AssetImage("images/background.jpeg"),
+      //       fit: BoxFit.none,
+      //       repeat: ImageRepeat.repeat
+      //     ),
+      //   ),))
       ]),
     );
   }
