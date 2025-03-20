@@ -237,15 +237,18 @@ class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderSt
                 title: ChartTitle(text: "Time to Burn Forecast (Minutes)"),
                 series: <LineSeries<ChartData, String>>[
                     LineSeries<ChartData, String>(
-          dataSource: _uviData.map((data) {
-            double burnTime = calculateTimeToBurn(data['uvi'], _selectedSkinType);
-            return burnTime == 9999
-                ? null
-                : ChartData(
-                    DateFormat.Hm().format(DateTime.parse(data['time']).toLocal()),
-                    burnTime,
-                  );
-          }).whereType<ChartData>().toList(),
+  dataSource: _uviData
+      .map((data) {
+        double burnTime = calculateTimeToBurn(data['uvi'], _selectedSkinType);
+        return burnTime >= 720
+            ? null 
+            : ChartData(
+                DateFormat.Hm().format(DateTime.parse(data['time']).toLocal()),
+                burnTime,
+              );
+      })
+      .whereType<ChartData>() // Ensures null values are filtered out
+      .toList(),
                       xValueMapper: (ChartData data, _) => data.x,
                       yValueMapper: (ChartData data, _) => double.parse(data.y.toStringAsFixed(2)),
                       markerSettings: const MarkerSettings(isVisible: true),
