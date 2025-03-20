@@ -223,7 +223,7 @@ class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderSt
                         )
                     )
                   ),
-                                const SizedBox(height: 20),
+                const SizedBox(height: 20),
                 SfCartesianChart(
                   primaryXAxis: CategoryAxis(
                   title: AxisTitle(text: "Forecast Time"),
@@ -256,7 +256,14 @@ class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderSt
                     name: "Time to Burn (min)",
                     ),
                   ],
-                )
+                ),
+                Text(
+                'NOTE: Time periods where time to burn exceeds 720 minutes are excluded from the graph',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                  color: Colors.grey.shade700,
+                ))
               ]
             )
     );
