@@ -231,17 +231,23 @@ class _ForecastPageState extends State<ForecastPage> with SingleTickerProviderSt
                 ),
                   primaryYAxis: NumericAxis(
                   minimum: 0,
+                  maximum: 720,
                   title: AxisTitle(text: 'Time to Burn (Minutes)'),
                 ),
                 title: ChartTitle(text: "Time to Burn Forecast (Minutes)"),
                 series: <LineSeries<ChartData, String>>[
                     LineSeries<ChartData, String>(
-                      dataSource: _uviData.map((data) {
-                        double burnTime = calculateTimeToBurn(data['uvi'], _selectedSkinType);
-                        return ChartData(DateFormat.Hm().format(DateTime.parse(data['time']).toLocal()), burnTime.isFinite ? burnTime : 9999);
-                      }).toList(),
+          dataSource: _uviData.map((data) {
+            double burnTime = calculateTimeToBurn(data['uvi'], _selectedSkinType);
+            return burnTime == 9999
+                ? null
+                : ChartData(
+                    DateFormat.Hm().format(DateTime.parse(data['time']).toLocal()),
+                    burnTime,
+                  );
+          }).whereType<ChartData>().toList(),
                       xValueMapper: (ChartData data, _) => data.x,
-                      yValueMapper: (ChartData data, _) => data.y,
+                      yValueMapper: (ChartData data, _) => double.parse(data.y.toStringAsFixed(2)),
                       markerSettings: const MarkerSettings(isVisible: true),
                       dataLabelSettings: const DataLabelSettings(isVisible: true),
                     name: "Time to Burn (min)",
