@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/pages/home_page.dart';
-import 'package:onboarding/pages/info_page.dart';
+import 'package:onboarding/pages/settings_page.dart';
 
 class WebNavbar extends StatefulWidget {
   final Function(int) onItemSelected;
@@ -87,7 +87,7 @@ class _MainContainerState extends State<MainContainer> {
 
   final List<Widget> _pages = [
     const HomePage(title: "Home Page"),
-    const InfoPage(title: "Info Page"),
+    const SettingsPage(title: "Information Page")
   ];
 
   void _onPageSelected(int index) {

@@ -42,6 +42,8 @@ dependencies:
   supabase_flutter: ^2.0.0
   lottie: ^2.3.0
   link_text: ^0.2.1
+  syncfusion_flutter_charts: ^28.2.12
+  geocoding: ^2.0.0
 
 dev_dependencies:
   flutter_test:
