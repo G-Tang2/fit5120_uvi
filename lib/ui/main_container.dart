@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:onboarding/pages/home_page.dart';
-import 'package:onboarding/pages/settings_page.dart';
+import 'package:onboarding/pages/forecast.dart';
 
 class WebNavbar extends StatefulWidget {
   final Function(int) onItemSelected;
@@ -14,7 +14,7 @@ class WebNavbar extends StatefulWidget {
 class _WebNavbarState extends State<WebNavbar> {
   int _selectedIndex = 0;
 
-  final List<String> _menuItems = ["Home", "Information"];
+  final List<String> _menuItems = ["Home", "Forecast"];
 
   void _onMenuTap(int index) {
     setState(() {
@@ -86,8 +86,8 @@ class _MainContainerState extends State<MainContainer> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const HomePage(title: "Home Page"),
-    const SettingsPage(title: "Information Page")
+    const HomePage(title: "Home"),
+    const ForecastPage(title: "Forecast")
   ];
 
   void _onPageSelected(int index) {
